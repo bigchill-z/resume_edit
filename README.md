@@ -1,54 +1,105 @@
-# React + TypeScript + Vite
+# 简历编辑器
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个功能强大、易于使用的在线简历编辑器，使用 React + TypeScript + Vite 构建。
 
-Currently, two official plugins are available:
+## ✨ 功能特性
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📝 **多模块编辑**：支持个人信息、教育背景、工作经验、技能、项目经历、自定义模块等
+- 🎨 **丰富的样式控制**：
+  - 文本加粗
+  - 字体颜色自定义
+  - 日期位置可选择是否靠右对齐
+- 🎯 **全局调整**：
+  - 整体缩放
+  - 行间距
+  - 模块间距
+  - 模块与分割线间距
+  - 首行与分割线间距
+  - 标题字体大小
+- 💾 **数据导出**：支持导出为 PDF 和 JSON 格式
+- 📥 **数据导入**：支持从 JSON 文件导入简历数据
+- 📱 **实时预览**：所见即所得，编辑时实时预览效果
+- 🔄 **模块拖拽排序**：自由调整模块顺序
 
-## Expanding the ESLint configuration
+## 🛠️ 技术栈
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **前端框架**：React 18 + TypeScript
+- **构建工具**：Vite 6
+- **UI 组件库**：Ant Design 5
+- **样式方案**：Tailwind CSS 4
+- **PDF 生成**：html2canvas + jspdf
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🚀 快速开始
+
+### 安装依赖
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 启动开发服务器
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+然后在浏览器中打开 `http://localhost:5173`
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+### 预览生产构建
+
+```bash
+npm run preview
+```
+
+## 📋 使用说明
+
+1. **编辑模块**：点击左侧模块卡片进行编辑
+2. **调整样式**：在每个输入框旁边可以设置加粗和字体颜色
+3. **日期对齐**：在教育和工作模块中，可以设置日期是否靠右对齐
+4. **全局设置**：点击顶部「全局调整」按钮，调整整体布局和样式
+5. **添加模块**：点击「添加模块」按钮添加自定义模块
+6. **导出简历**：点击顶部「导出 PDF」或「导出 JSON」保存您的简历
+
+## 📦 项目结构
+
+```
+new_resume/
+├── src/
+│   ├── components/
+│   │   ├── modules/          # 各模块编辑器组件
+│   │   │   ├── PersonalEditor.tsx
+│   │   │   ├── EducationEditor.tsx
+│   │   │   ├── WorkEditor.tsx
+│   │   │   ├── SkillsEditor.tsx
+│   │   │   ├── ProjectsEditor.tsx
+│   │   │   └── CustomEditor.tsx
+│   │   ├── Preview.tsx        # 预览组件
+│   │   └── ResumeList.tsx
+│   ├── types/
+│   │   └── index.ts           # TypeScript 类型定义
+│   ├── utils/
+│   │   ├── pdf.ts             # PDF 导出工具
+│   │   ├── json.ts            # JSON 导入导出工具
+│   │   └── storage.ts
+│   ├── App.tsx                # 主应用组件
+│   ├── main.tsx               # 应用入口
+│   └── index.css
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── tailwind.config.js
+```
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📄 许可证
+
+MIT License
