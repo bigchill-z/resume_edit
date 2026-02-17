@@ -145,6 +145,8 @@ function App() {
     useState<number>(1);
   // 模块标题字体大小
   const [moduleTitleFontSize, setModuleTitleFontSize] = useState<number>(20);
+  // 内容字体大小
+  const [contentFontSize, setContentFontSize] = useState<number>(14);
 
   // 编辑模块标题的状态
   const [editingModuleTitle, setEditingModuleTitle] = useState<string | null>(
@@ -777,6 +779,22 @@ function App() {
                     style={{ width: 150 }}
                   />
                 </div>
+
+                {/* 内容字体大小 */}
+                <div className="flex items-center space-x-2">
+                  <span className="flex items-center">
+                    <FontSizeOutlined className="mr-1" /> 内容字体大小
+                  </span>
+                  <span>{contentFontSize}px</span>
+                  <Slider
+                    min={12}
+                    max={18}
+                    step={1}
+                    value={contentFontSize}
+                    onChange={setContentFontSize}
+                    style={{ width: 150 }}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -822,6 +840,7 @@ function App() {
                             autoFocus
                             size="small"
                             placeholder="输入模块名称"
+                            style={{ width: 180 }}
                           />
                         ) : (
                           <div
@@ -898,6 +917,7 @@ function App() {
                             autoFocus
                             size="small"
                             placeholder="输入模块名称"
+                            style={{ width: 180 }}
                           />
                         ) : (
                           <div
@@ -971,6 +991,7 @@ function App() {
                   moduleDividerSpacing={moduleDividerSpacing}
                   moduleFirstLineSpacing={moduleFirstLineSpacing}
                   moduleTitleFontSize={moduleTitleFontSize}
+                  contentFontSize={contentFontSize}
                 />
               </div>
             </Card>

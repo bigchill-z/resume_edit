@@ -19,6 +19,7 @@ interface PreviewProps {
   moduleDividerSpacing?: number;
   moduleFirstLineSpacing?: number;
   moduleTitleFontSize?: number;
+  contentFontSize?: number;
 }
 
 const Preview: React.FC<PreviewProps> = ({
@@ -29,6 +30,7 @@ const Preview: React.FC<PreviewProps> = ({
   moduleDividerSpacing = 1,
   moduleFirstLineSpacing = 1,
   moduleTitleFontSize = 20,
+  contentFontSize = 14,
 }) => {
   // 按顺序排序模块
   const sortedModules = [...modules].sort((a, b) => a.order - b.order);
@@ -666,6 +668,7 @@ const Preview: React.FC<PreviewProps> = ({
         transformOrigin: "top center",
         transition: "transform 0.3s ease",
         lineHeight: lineSpacing,
+        fontSize: contentFontSize,
       }}
     >
       {sortedModules.map((module) => (
