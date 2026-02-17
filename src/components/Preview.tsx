@@ -67,6 +67,7 @@ const Preview: React.FC<PreviewProps> = ({
                 ? "bold"
                 : "normal",
               color: personalModule.styles?.title?.color,
+              fontSize: contentFontSize,
             }}
           >
             {data.title || "职位"}
@@ -80,6 +81,7 @@ const Preview: React.FC<PreviewProps> = ({
                     ? "bold"
                     : "normal",
                   color: personalModule.styles?.email?.color,
+                  fontSize: contentFontSize,
                 }}
               >
                 {data.email}
@@ -121,6 +123,7 @@ const Preview: React.FC<PreviewProps> = ({
                   ? "bold"
                   : "normal",
                 color: personalModule.styles?.summary?.color,
+                fontSize: contentFontSize,
               }}
             >
               {data.summary}
@@ -186,14 +189,20 @@ const Preview: React.FC<PreviewProps> = ({
                   <div>
                     <Text
                       strong={item.styles?.school?.bold || false}
-                      style={{ color: item.styles?.school?.color }}
+                      style={{
+                        color: item.styles?.school?.color,
+                        fontSize: contentFontSize,
+                      }}
                     >
                       {item.school}
                     </Text>{" "}
                     |{" "}
                     <Text
                       strong={item.styles?.degree?.bold || false}
-                      style={{ color: item.styles?.degree?.color }}
+                      style={{
+                        color: item.styles?.degree?.color,
+                        fontSize: contentFontSize,
+                      }}
                     >
                       {item.degree}
                     </Text>{" "}
@@ -204,6 +213,7 @@ const Preview: React.FC<PreviewProps> = ({
                           ? "bold"
                           : "normal",
                         color: item.styles?.field?.color,
+                        fontSize: contentFontSize,
                       }}
                     >
                       {item.field}
@@ -214,6 +224,7 @@ const Preview: React.FC<PreviewProps> = ({
                     style={{
                       fontWeight: item.styles?.date?.bold ? "bold" : "normal",
                       color: item.styles?.date?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.startDate} - {item.endDate}
@@ -225,6 +236,7 @@ const Preview: React.FC<PreviewProps> = ({
                     marginBottom: 8,
                     lineHeight: lineSpacing,
                     whiteSpace: "pre-line",
+                    fontSize: contentFontSize,
                   }}
                 >
                   <Text
@@ -255,6 +267,7 @@ const Preview: React.FC<PreviewProps> = ({
                     style={{
                       fontWeight: item.styles?.date?.bold ? "bold" : "normal",
                       color: item.styles?.date?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.startDate} - {item.endDate}
@@ -270,6 +283,7 @@ const Preview: React.FC<PreviewProps> = ({
                       ? "bold"
                       : "normal",
                     color: item.styles?.description?.color,
+                    fontSize: contentFontSize,
                   }}
                 >
                   {item.description}
@@ -337,6 +351,7 @@ const Preview: React.FC<PreviewProps> = ({
                     style={{
                       fontWeight: item.styles?.date?.bold ? "bold" : "normal",
                       color: item.styles?.date?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.startDate} - {item.endDate}
@@ -348,6 +363,7 @@ const Preview: React.FC<PreviewProps> = ({
                     marginBottom: 8,
                     lineHeight: lineSpacing,
                     whiteSpace: "pre-line",
+                    fontSize: contentFontSize,
                   }}
                 >
                   <Text
@@ -369,6 +385,7 @@ const Preview: React.FC<PreviewProps> = ({
                     style={{
                       fontWeight: item.styles?.date?.bold ? "bold" : "normal",
                       color: item.styles?.date?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.startDate} - {item.endDate}
@@ -384,6 +401,7 @@ const Preview: React.FC<PreviewProps> = ({
                       ? "bold"
                       : "normal",
                     color: item.styles?.description?.color,
+                    fontSize: contentFontSize,
                   }}
                 >
                   {item.description}
@@ -424,7 +442,13 @@ const Preview: React.FC<PreviewProps> = ({
               className="flex items-center"
               style={{ lineHeight: lineSpacing, whiteSpace: "pre-line" }}
             >
-              <Text style={{ width: 80, lineHeight: lineSpacing }}>
+              <Text
+                style={{
+                  width: 80,
+                  lineHeight: lineSpacing,
+                  fontSize: contentFontSize,
+                }}
+              >
                 {item.name}
               </Text>
               <div className="flex-1 bg-gray-200 rounded-full h-2">
@@ -433,7 +457,13 @@ const Preview: React.FC<PreviewProps> = ({
                   style={{ width: `${(item.level / 5) * 100}%` }}
                 ></div>
               </div>
-              <Text style={{ marginLeft: 8, lineHeight: lineSpacing }}>
+              <Text
+                style={{
+                  marginLeft: 8,
+                  lineHeight: lineSpacing,
+                  fontSize: contentFontSize,
+                }}
+              >
                 {item.level}/5
               </Text>
             </div>
@@ -483,6 +513,7 @@ const Preview: React.FC<PreviewProps> = ({
                   whiteSpace: "pre-line",
                   fontWeight: item.styles?.name?.bold ? "bold" : "normal",
                   color: item.styles?.name?.color,
+                  fontSize: contentFontSize,
                 }}
               >
                 {item.name}
@@ -496,6 +527,7 @@ const Preview: React.FC<PreviewProps> = ({
                       ? "bold"
                       : "normal",
                     color: item.styles?.description?.color,
+                    fontSize: contentFontSize,
                   }}
                 >
                   {item.description}
@@ -515,6 +547,7 @@ const Preview: React.FC<PreviewProps> = ({
                         ? "bold"
                         : "normal",
                       color: item.styles?.technologies?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     技术栈：
@@ -535,11 +568,19 @@ const Preview: React.FC<PreviewProps> = ({
               {item.link && (
                 <Paragraph
                   className="mt-2"
-                  style={{ lineHeight: lineSpacing, whiteSpace: "pre-line" }}
+                  style={{
+                    lineHeight: lineSpacing,
+                    whiteSpace: "pre-line",
+                    fontSize: contentFontSize,
+                  }}
                 >
                   <Text
                     type="secondary"
-                    style={{ lineHeight: lineSpacing, whiteSpace: "pre-line" }}
+                    style={{
+                      lineHeight: lineSpacing,
+                      whiteSpace: "pre-line",
+                      fontSize: contentFontSize,
+                    }}
                   >
                     项目链接：
                   </Text>
@@ -553,6 +594,7 @@ const Preview: React.FC<PreviewProps> = ({
                       whiteSpace: "pre-line",
                       fontWeight: item.styles?.link?.bold ? "bold" : "normal",
                       color: item.styles?.link?.color || "#1890ff",
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.link}
@@ -623,6 +665,7 @@ const Preview: React.FC<PreviewProps> = ({
                             ? "bold"
                             : "normal",
                           color: item.styles?.content?.color,
+                          fontSize: contentFontSize,
                         }}
                       >
                         {item.content}
