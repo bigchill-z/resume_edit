@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Card, Checkbox, ColorPicker, Space } from "antd";
-import { DeleteOutlined, BoldOutlined } from "@ant-design/icons";
+import React from "react";
+import { Form, Input, Button, Card } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useListEditor } from "../../hooks/useListEditor";
+import StyleControls from "../common/StyleControls";
 import type { TextStyle } from "../../types/index";
 
 interface ProjectItem {
@@ -9,6 +11,12 @@ interface ProjectItem {
   description: string;
   link: string;
   technologies: string[];
+  styles?: {
+    name?: TextStyle;
+    description?: TextStyle;
+    technologies?: TextStyle;
+    link?: TextStyle;
+  };
 }
 
 interface ProjectsEditorProps {
@@ -30,81 +38,29 @@ const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
   onUpdate,
   onUpdateItemStyles,
 }) => {
-  const [projectItems, setProjectItems] = useState<ProjectItem[]>(data);
+  const {
+    items: projectItems,
+    handleChange,
+    handleAddItem,
+    handleRemoveItem,
+    handleStyleChange,
+  } = useListEditor<ProjectItem>({
+    initialData: data,
+    onUpdate,
+    onUpdateItemStyles,
+  });
 
-  // 监听data props变化，更新projectItems
-  useEffect(() => {
-    setProjectItems(data);
-  }, [data]);
-
-  const handleChange = (
-    id: string,
-    field: keyof ProjectItem,
-    value: string | string[],
-  ) => {
-    const newProjectItems = projectItems.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item,
-    );
-    setProjectItems(newProjectItems);
-    onUpdate(newProjectItems);
-  };
-
-  const handleAddItem = () => {
-    const newItem: ProjectItem = {
-      id: Date.now().toString(),
+  const handleAddProjectItem = () => {
+    handleAddItem({
       name: "",
       description: "",
       link: "",
       technologies: [],
-    };
-    const newProjectItems = [...projectItems, newItem];
-    setProjectItems(newProjectItems);
-    onUpdate(newProjectItems);
-  };
-
-  const handleRemoveItem = (id: string) => {
-    const newProjectItems = projectItems.filter((item) => item.id !== id);
-    setProjectItems(newProjectItems);
-    onUpdate(newProjectItems);
-  };
-
-  const handleStyleChange = (
-    id: string,
-    field: string,
-    style: Partial<TextStyle>,
-  ) => {
-    const newProjectItems = projectItems.map((item) => {
-      if (item.id === id) {
-        return {
-          ...item,
-          styles: {
-            ...item.styles,
-            [field]: {
-              ...item.styles?.[field as string],
-              ...style,
-            },
-          },
-        };
-      }
-      return item;
     });
-    setProjectItems(newProjectItems);
-    const item = projectItems.find((item) => item.id === id);
-    onUpdateItemStyles?.(id, {
-      ...item?.styles,
-      [field]: {
-        ...item?.styles?.[field as string],
-        ...style,
-      },
-    });
-  };
-
-  const handleFinish = () => {
-    onUpdate(projectItems);
   };
 
   return (
-    <Form onFinish={handleFinish} className="space-y-6">
+    <Form className="space-y-6">
       {projectItems.map((item) => (
         <Card key={item.id} className="mb-4">
           <div className="flex justify-between items-center mb-4">
@@ -124,29 +80,16 @@ const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
               onChange={(e) => handleChange(item.id, "name", e.target.value)}
               placeholder="请输入项目名称"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.name?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "name", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.name?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "name", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.name?.bold}
+              color={item.styles?.name?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "name", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "name", { color })
+              }
+            />
           </Form.Item>
 
           <Form.Item label="技术栈">
@@ -168,29 +111,16 @@ const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
               }
               placeholder="例如：React, Node.js, MongoDB"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.technologies?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "technologies", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.technologies?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "technologies", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.technologies?.bold}
+              color={item.styles?.technologies?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "technologies", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "technologies", { color })
+              }
+            />
           </Form.Item>
 
           <Form.Item label="项目描述">
@@ -202,29 +132,16 @@ const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
               rows={3}
               placeholder="请输入项目描述"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.description?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "description", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.description?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "description", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.description?.bold}
+              color={item.styles?.description?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "description", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "description", { color })
+              }
+            />
           </Form.Item>
 
           <Form.Item label="项目链接">
@@ -234,35 +151,22 @@ const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
               onChange={(e) => handleChange(item.id, "link", e.target.value)}
               placeholder="请输入项目链接"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.link?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "link", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.link?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "link", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.link?.bold}
+              color={item.styles?.link?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "link", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "link", { color })
+              }
+            />
           </Form.Item>
         </Card>
       ))}
 
       <Form.Item>
-        <Button type="dashed" block onClick={handleAddItem}>
+        <Button type="dashed" block onClick={handleAddProjectItem}>
           + 添加项目
         </Button>
       </Form.Item>

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Card, Checkbox, ColorPicker, Space } from "antd";
-import { DeleteOutlined, BoldOutlined } from "@ant-design/icons";
+import React from "react";
+import { Form, Input, Button, Card, Checkbox, Space } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useListEditor } from "../../hooks/useListEditor";
+import StyleControls from "../common/StyleControls";
 import type { TextStyle } from "../../types/index";
 
 interface WorkItem {
@@ -10,6 +12,13 @@ interface WorkItem {
   startDate: string;
   endDate: string;
   description: string;
+  dateRightAlign?: boolean;
+  styles?: {
+    company?: TextStyle;
+    position?: TextStyle;
+    date?: TextStyle;
+    description?: TextStyle;
+  };
 }
 
 interface WorkEditorProps {
@@ -33,90 +42,41 @@ const WorkEditor: React.FC<WorkEditorProps> = ({
   onUpdateItemStyles,
   onUpdateItemDateAlign,
 }) => {
-  const [workItems, setWorkItems] = useState<WorkItem[]>(data);
-
-  // 监听data props变化，更新workItems
-  useEffect(() => {
-    setWorkItems(data);
-  }, [data]);
-
-  const handleChange = (id: string, field: keyof WorkItem, value: string) => {
-    const newWorkItems = workItems.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item,
-    );
-    setWorkItems(newWorkItems);
-    onUpdate(newWorkItems);
-  };
-
-  const handleAddItem = () => {
-    const newItem: WorkItem = {
-      id: Date.now().toString(),
-      company: "",
-      position: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    };
-    const newWorkItems = [...workItems, newItem];
-    setWorkItems(newWorkItems);
-    onUpdate(newWorkItems);
-  };
-
-  const handleRemoveItem = (id: string) => {
-    const newWorkItems = workItems.filter((item) => item.id !== id);
-    setWorkItems(newWorkItems);
-    onUpdate(newWorkItems);
-  };
-
-  const handleStyleChange = (
-    id: string,
-    field: string,
-    style: Partial<TextStyle>,
-  ) => {
-    const newWorkItems = workItems.map((item) => {
-      if (item.id === id) {
-        return {
-          ...item,
-          styles: {
-            ...item.styles,
-            [field]: {
-              ...item.styles?.[field as string],
-              ...style,
-            },
-          },
-        };
-      }
-      return item;
-    });
-    setWorkItems(newWorkItems);
-    const item = workItems.find((item) => item.id === id);
-    onUpdateItemStyles?.(id, {
-      ...item?.styles,
-      [field]: {
-        ...item?.styles?.[field as string],
-        ...style,
-      },
-    });
-  };
+  const {
+    items: workItems,
+    handleChange,
+    handleAddItem,
+    handleRemoveItem,
+    handleStyleChange,
+  } = useListEditor<WorkItem>({
+    initialData: data,
+    onUpdate,
+    onUpdateItemStyles,
+  });
 
   const handleDateRightAlignChange = (id: string, checked: boolean) => {
-    const newWorkItems = workItems.map((item) => {
+    const newItems = workItems.map((item) => {
       if (item.id === id) {
         return { ...item, dateRightAlign: checked };
       }
       return item;
     });
-    setWorkItems(newWorkItems);
-    onUpdate(newWorkItems);
+    onUpdate(newItems);
     onUpdateItemDateAlign?.(id, checked);
   };
 
-  const handleFinish = () => {
-    onUpdate(workItems);
+  const handleAddWorkItem = () => {
+    handleAddItem({
+      company: "",
+      position: "",
+      startDate: "",
+      endDate: "",
+      description: "",
+    });
   };
 
   return (
-    <Form onFinish={handleFinish} className="space-y-6">
+    <Form className="space-y-6">
       {workItems.map((item) => (
         <Card key={item.id} className="mb-4">
           <div className="flex justify-between items-center mb-4">
@@ -136,29 +96,16 @@ const WorkEditor: React.FC<WorkEditorProps> = ({
               onChange={(e) => handleChange(item.id, "company", e.target.value)}
               placeholder="请输入公司"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.company?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "company", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.company?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "company", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.company?.bold}
+              color={item.styles?.company?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "company", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "company", { color })
+              }
+            />
           </Form.Item>
 
           <Form.Item label="职位">
@@ -169,29 +116,16 @@ const WorkEditor: React.FC<WorkEditorProps> = ({
               }
               placeholder="请输入职位"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.position?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "position", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.position?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "position", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.position?.bold}
+              color={item.styles?.position?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "position", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "position", { color })
+              }
+            />
           </Form.Item>
 
           <Form.Item label="开始日期">
@@ -214,27 +148,16 @@ const WorkEditor: React.FC<WorkEditorProps> = ({
 
           <Form.Item label="日期样式">
             <Space size="middle">
-              <Checkbox
-                checked={item.styles?.date?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "date", {
-                    bold: e.target.checked,
-                  })
+              <StyleControls
+                bold={item.styles?.date?.bold}
+                color={item.styles?.date?.color}
+                onBoldChange={(checked) =>
+                  handleStyleChange(item.id, "date", { bold: checked })
                 }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.date?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "date", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
+                onColorChange={(color) =>
+                  handleStyleChange(item.id, "date", { color })
+                }
+              />
               <Checkbox
                 checked={item.dateRightAlign || false}
                 onChange={(e) =>
@@ -255,35 +178,22 @@ const WorkEditor: React.FC<WorkEditorProps> = ({
               rows={4}
               placeholder="请输入描述"
             />
-            <Space size="middle" className="mt-2">
-              <Checkbox
-                checked={item.styles?.description?.bold || false}
-                onChange={(e) =>
-                  handleStyleChange(item.id, "description", {
-                    bold: e.target.checked,
-                  })
-                }
-              >
-                <BoldOutlined /> 加粗
-              </Checkbox>
-              <Space size="small">
-                <ColorPicker
-                  value={item.styles?.description?.color}
-                  onChange={(color) =>
-                    handleStyleChange(item.id, "description", {
-                      color: color?.toHexString(),
-                    })
-                  }
-                />
-                <span>字体颜色</span>
-              </Space>
-            </Space>
+            <StyleControls
+              bold={item.styles?.description?.bold}
+              color={item.styles?.description?.color}
+              onBoldChange={(checked) =>
+                handleStyleChange(item.id, "description", { bold: checked })
+              }
+              onColorChange={(color) =>
+                handleStyleChange(item.id, "description", { color })
+              }
+            />
           </Form.Item>
         </Card>
       ))}
 
       <Form.Item>
-        <Button type="dashed" block onClick={handleAddItem}>
+        <Button type="dashed" block onClick={handleAddWorkItem}>
           + 添加工作经历
         </Button>
       </Form.Item>

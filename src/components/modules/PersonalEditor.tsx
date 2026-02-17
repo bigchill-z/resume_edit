@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Card,
-  Upload,
-  Checkbox,
-  ColorPicker,
-  Space,
-} from "antd";
-import { UploadOutlined, BoldOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Card, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import StyleControls from "../common/StyleControls";
 import type { TextStyle } from "../../types/index";
 
 interface PersonalData {
@@ -59,12 +51,10 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
     summary?: TextStyle;
   }>(styles);
 
-  // 监听data props变化，更新formData
   useEffect(() => {
     setFormData(data);
   }, [data]);
 
-  // 监听styles props变化，更新formStyles
   useEffect(() => {
     setFormStyles(styles);
   }, [styles]);
@@ -90,10 +80,6 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
     onUpdateStyles?.(newFormStyles);
   };
 
-  const handleFinish = () => {
-    onUpdate(formData);
-  };
-
   const handlePhotoUpload = (file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -102,11 +88,11 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
       onUpdate(newFormData);
     };
     reader.readAsDataURL(file);
-    return false; // 阻止自动上传
+    return false;
   };
 
   return (
-    <Form onFinish={handleFinish} className="space-y-4">
+    <Form className="space-y-4">
       <Card className="mb-4" style={{ overflow: "hidden" }}>
         <Form.Item label="证件照">
           <div
@@ -155,25 +141,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             onChange={handleChange}
             placeholder="请输入姓名"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.name?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("name", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.name?.color}
-                onChange={(color) =>
-                  handleStyleChange("name", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.name?.bold}
+            color={formStyles.name?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("name", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("name", { color })}
+          />
         </Form.Item>
 
         <Form.Item label="职位">
@@ -183,25 +158,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             onChange={handleChange}
             placeholder="请输入职位"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.title?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("title", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.title?.color}
-                onChange={(color) =>
-                  handleStyleChange("title", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.title?.bold}
+            color={formStyles.title?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("title", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("title", { color })}
+          />
         </Form.Item>
 
         <Form.Item label="邮箱">
@@ -212,25 +176,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             onChange={handleChange}
             placeholder="请输入邮箱"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.email?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("email", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.email?.color}
-                onChange={(color) =>
-                  handleStyleChange("email", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.email?.bold}
+            color={formStyles.email?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("email", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("email", { color })}
+          />
         </Form.Item>
 
         <Form.Item label="电话">
@@ -241,25 +194,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             onChange={handleChange}
             placeholder="请输入电话"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.phone?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("phone", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.phone?.color}
-                onChange={(color) =>
-                  handleStyleChange("phone", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.phone?.bold}
+            color={formStyles.phone?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("phone", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("phone", { color })}
+          />
         </Form.Item>
 
         <Form.Item label="地址">
@@ -269,25 +211,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             onChange={handleChange}
             placeholder="请输入地址"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.address?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("address", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.address?.color}
-                onChange={(color) =>
-                  handleStyleChange("address", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.address?.bold}
+            color={formStyles.address?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("address", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("address", { color })}
+          />
         </Form.Item>
 
         <Form.Item label="个人简介">
@@ -298,25 +229,14 @@ const PersonalEditor: React.FC<PersonalEditorProps> = ({
             rows={4}
             placeholder="请输入个人简介"
           />
-          <Space size="middle" className="mt-2">
-            <Checkbox
-              checked={formStyles.summary?.bold || false}
-              onChange={(e) =>
-                handleStyleChange("summary", { bold: e.target.checked })
-              }
-            >
-              <BoldOutlined /> 加粗
-            </Checkbox>
-            <Space size="small">
-              <ColorPicker
-                value={formStyles.summary?.color}
-                onChange={(color) =>
-                  handleStyleChange("summary", { color: color?.toHexString() })
-                }
-              />
-              <span>字体颜色</span>
-            </Space>
-          </Space>
+          <StyleControls
+            bold={formStyles.summary?.bold}
+            color={formStyles.summary?.color}
+            onBoldChange={(checked) =>
+              handleStyleChange("summary", { bold: checked })
+            }
+            onColorChange={(color) => handleStyleChange("summary", { color })}
+          />
         </Form.Item>
       </Card>
     </Form>

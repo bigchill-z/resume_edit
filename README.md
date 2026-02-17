@@ -72,6 +72,8 @@ npm run preview
 new_resume/
 ├── src/
 │   ├── components/
+│   │   ├── common/           # 公共组件
+│   │   │   └── StyleControls.tsx  # 样式控制组件（加粗、颜色）
 │   │   ├── modules/          # 各模块编辑器组件
 │   │   │   ├── PersonalEditor.tsx
 │   │   │   ├── EducationEditor.tsx
@@ -81,6 +83,8 @@ new_resume/
 │   │   │   └── CustomEditor.tsx
 │   │   ├── Preview.tsx        # 预览组件
 │   │   └── ResumeList.tsx
+│   ├── hooks/                # 自定义 Hooks
+│   │   └── useListEditor.ts  # 列表编辑器通用逻辑 Hook
 │   ├── types/
 │   │   └── index.ts           # TypeScript 类型定义
 │   ├── utils/
