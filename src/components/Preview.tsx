@@ -770,12 +770,23 @@ const Preview: React.FC<PreviewProps> = ({
       if (!contentRef.current) return;
 
       const contentHeight = contentRef.current.scrollHeight;
-      const containerHeight = contentRef.current.clientHeight;
 
-      const A4_HEIGHT_PX = 1123;
-      const effectiveHeight =
-        containerHeight > 0 ? containerHeight : A4_HEIGHT_PX;
-      const pages = Math.max(1, Math.ceil(contentHeight / effectiveHeight));
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const PPI = 96;
+      const MM_TO_PX = PPI / 25.4;
+      const A4_WIDTH_PX = A4_WIDTH_MM * MM_TO_PX;
+      const A4_HEIGHT_PX = A4_HEIGHT_MM * MM_TO_PX;
+
+      const currentWidth = contentRef.current.offsetWidth;
+      const scaleFactor = currentWidth / A4_WIDTH_PX;
+      const pageHeight = A4_HEIGHT_PX * scaleFactor;
+
+      const paddingTop = 40;
+      const paddingBottom = 40;
+      const effectivePageHeight = pageHeight - paddingTop - paddingBottom;
+
+      const pages = Math.max(1, Math.ceil(contentHeight / effectivePageHeight));
 
       setPageInfo({ currentPage: 1, totalPages: pages });
     };
