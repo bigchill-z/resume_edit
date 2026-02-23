@@ -197,10 +197,10 @@ function App() {
 
   // 处理个人信息更新
   const handlePersonalUpdate = useCallback(
-    (data: PersonalModule["data"]) => {
+    (moduleId: string, data: PersonalModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "personal" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -209,10 +209,10 @@ function App() {
 
   // 处理个人信息样式更新
   const handlePersonalStylesUpdate = useCallback(
-    (styles: PersonalModule["styles"]) => {
+    (moduleId: string, styles: PersonalModule["styles"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "personal" ? { ...module, styles } : module,
+          module.id === moduleId ? { ...module, styles } : module,
         ),
       );
     },
@@ -221,10 +221,10 @@ function App() {
 
   // 处理教育背景更新
   const handleEducationUpdate = useCallback(
-    (data: EducationModule["data"]) => {
+    (moduleId: string, data: EducationModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "education" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -233,10 +233,10 @@ function App() {
 
   // 处理教育背景项样式更新
   const handleEducationItemStylesUpdate = useCallback(
-    (id: string, styles: any) => {
+    (moduleId: string, id: string, styles: any) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "education") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, styles };
@@ -254,10 +254,10 @@ function App() {
 
   // 处理教育背景项日期靠右对齐
   const handleEducationItemDateAlign = useCallback(
-    (id: string, dateRightAlign: boolean) => {
+    (moduleId: string, id: string, dateRightAlign: boolean) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "education") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, dateRightAlign };
@@ -275,10 +275,10 @@ function App() {
 
   // 处理工作经验更新
   const handleWorkUpdate = useCallback(
-    (data: WorkModule["data"]) => {
+    (moduleId: string, data: WorkModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "work" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -287,10 +287,10 @@ function App() {
 
   // 处理工作经验项样式更新
   const handleWorkItemStylesUpdate = useCallback(
-    (id: string, styles: any) => {
+    (moduleId: string, id: string, styles: any) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "work") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, styles };
@@ -308,10 +308,10 @@ function App() {
 
   // 处理工作经验项日期靠右对齐
   const handleWorkItemDateAlign = useCallback(
-    (id: string, dateRightAlign: boolean) => {
+    (moduleId: string, id: string, dateRightAlign: boolean) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "work") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, dateRightAlign };
@@ -329,10 +329,10 @@ function App() {
 
   // 处理技能更新
   const handleSkillsUpdate = useCallback(
-    (data: SkillsModule["data"]) => {
+    (moduleId: string, data: SkillsModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "skills" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -341,10 +341,10 @@ function App() {
 
   // 处理项目经历更新
   const handleProjectsUpdate = useCallback(
-    (data: ProjectsModule["data"]) => {
+    (moduleId: string, data: ProjectsModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "projects" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -353,10 +353,10 @@ function App() {
 
   // 处理项目经历项样式更新
   const handleProjectsItemStylesUpdate = useCallback(
-    (id: string, styles: any) => {
+    (moduleId: string, id: string, styles: any) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "projects") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, styles };
@@ -374,10 +374,10 @@ function App() {
 
   // 处理自定义模块更新
   const handleCustomUpdate = useCallback(
-    (data: CustomModule["data"]) => {
+    (moduleId: string, data: CustomModule["data"]) => {
       setModules(
         modules.map((module) =>
-          module.type === "custom" ? { ...module, data } : module,
+          module.id === moduleId ? { ...module, data } : module,
         ),
       );
     },
@@ -386,10 +386,10 @@ function App() {
 
   // 处理自定义模块项样式更新
   const handleCustomItemStylesUpdate = useCallback(
-    (id: string, styles: any) => {
+    (moduleId: string, id: string, styles: any) => {
       setModules(
         modules.map((module) => {
-          if (module.type === "custom") {
+          if (module.id === moduleId) {
             const newData = (module.data as any[]).map((item) => {
               if (item.id === id) {
                 return { ...item, styles };
@@ -464,42 +464,59 @@ function App() {
           {module.type === "personal" && (
             <PersonalEditor
               data={module.data}
-              onUpdate={handlePersonalUpdate}
+              onUpdate={(data) => handlePersonalUpdate(module.id, data)}
               styles={module.styles}
-              onUpdateStyles={handlePersonalStylesUpdate}
+              onUpdateStyles={(styles) =>
+                handlePersonalStylesUpdate(module.id, styles)
+              }
             />
           )}
           {module.type === "education" && (
             <EducationEditor
               data={module.data}
-              onUpdate={handleEducationUpdate}
-              onUpdateItemStyles={handleEducationItemStylesUpdate}
-              onUpdateItemDateAlign={handleEducationItemDateAlign}
+              onUpdate={(data) => handleEducationUpdate(module.id, data)}
+              onUpdateItemStyles={(id, styles) =>
+                handleEducationItemStylesUpdate(module.id, id, styles)
+              }
+              onUpdateItemDateAlign={(id, align) =>
+                handleEducationItemDateAlign(module.id, id, align)
+              }
             />
           )}
           {module.type === "work" && (
             <WorkEditor
               data={module.data}
-              onUpdate={handleWorkUpdate}
-              onUpdateItemStyles={handleWorkItemStylesUpdate}
-              onUpdateItemDateAlign={handleWorkItemDateAlign}
+              onUpdate={(data) => handleWorkUpdate(module.id, data)}
+              onUpdateItemStyles={(id, styles) =>
+                handleWorkItemStylesUpdate(module.id, id, styles)
+              }
+              onUpdateItemDateAlign={(id, align) =>
+                handleWorkItemDateAlign(module.id, id, align)
+              }
             />
           )}
           {module.type === "skills" && (
-            <SkillsEditor data={module.data} onUpdate={handleSkillsUpdate} />
+            <SkillsEditor
+              data={module.data}
+              onUpdate={(data) => handleSkillsUpdate(module.id, data)}
+            />
           )}
           {module.type === "projects" && (
             <ProjectsEditor
               data={module.data}
-              onUpdate={handleProjectsUpdate}
-              onUpdateItemStyles={handleProjectsItemStylesUpdate}
+              onUpdate={(data) => handleProjectsUpdate(module.id, data)}
+              onUpdateItemStyles={(id, styles) =>
+                handleProjectsItemStylesUpdate(module.id, id, styles)
+              }
             />
           )}
           {module.type === "custom" && (
             <CustomEditor
               data={module.data}
-              onUpdate={handleCustomUpdate}
-              onUpdateItemStyles={handleCustomItemStylesUpdate}
+              onUpdate={(data) => handleCustomUpdate(module.id, data)}
+              onUpdateItemStyles={(id, styles) =>
+                handleCustomItemStylesUpdate(module.id, id, styles)
+              }
             />
           )}
         </div>
