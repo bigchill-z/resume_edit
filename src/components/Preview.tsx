@@ -95,6 +95,7 @@ const Preview: React.FC<PreviewProps> = ({
                     ? "bold"
                     : "normal",
                   color: personalModule.styles?.phone?.color,
+                  fontSize: contentFontSize,
                 }}
               >
                 {data.phone}
@@ -108,6 +109,7 @@ const Preview: React.FC<PreviewProps> = ({
                     ? "bold"
                     : "normal",
                   color: personalModule.styles?.address?.color,
+                  fontSize: contentFontSize,
                 }}
               >
                 {data.address}
@@ -241,14 +243,20 @@ const Preview: React.FC<PreviewProps> = ({
                 >
                   <Text
                     strong={item.styles?.school?.bold || false}
-                    style={{ color: item.styles?.school?.color }}
+                    style={{
+                      color: item.styles?.school?.color,
+                      fontSize: contentFontSize,
+                    }}
                   >
                     {item.school}
                   </Text>{" "}
                   |{" "}
                   <Text
                     strong={item.styles?.degree?.bold || false}
-                    style={{ color: item.styles?.degree?.color }}
+                    style={{
+                      color: item.styles?.degree?.color,
+                      fontSize: contentFontSize,
+                    }}
                   >
                     {item.degree}
                   </Text>{" "}
@@ -257,6 +265,7 @@ const Preview: React.FC<PreviewProps> = ({
                     style={{
                       fontWeight: item.styles?.field?.bold ? "bold" : "normal",
                       color: item.styles?.field?.color,
+                      fontSize: contentFontSize,
                     }}
                   >
                     {item.field}
@@ -334,14 +343,20 @@ const Preview: React.FC<PreviewProps> = ({
                   <div>
                     <Text
                       strong={item.styles?.company?.bold || false}
-                      style={{ color: item.styles?.company?.color }}
+                      style={{
+                        color: item.styles?.company?.color,
+                        fontSize: contentFontSize,
+                      }}
                     >
                       {item.company}
                     </Text>{" "}
                     |{" "}
                     <Text
                       strong={item.styles?.position?.bold || false}
-                      style={{ color: item.styles?.position?.color }}
+                      style={{
+                        color: item.styles?.position?.color,
+                        fontSize: contentFontSize,
+                      }}
                     >
                       {item.position}
                     </Text>
@@ -368,14 +383,20 @@ const Preview: React.FC<PreviewProps> = ({
                 >
                   <Text
                     strong={item.styles?.company?.bold || false}
-                    style={{ color: item.styles?.company?.color }}
+                    style={{
+                      color: item.styles?.company?.color,
+                      fontSize: contentFontSize,
+                    }}
                   >
                     {item.company}
                   </Text>{" "}
                   |{" "}
                   <Text
                     strong={item.styles?.position?.bold || false}
-                    style={{ color: item.styles?.position?.color }}
+                    style={{
+                      color: item.styles?.position?.color,
+                      fontSize: contentFontSize,
+                    }}
                   >
                     {item.position}
                   </Text>{" "}
