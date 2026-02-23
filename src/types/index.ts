@@ -135,6 +135,7 @@ export interface CustomItem {
   id: string;
   label: string;
   content: string;
+  labelInline?: boolean;
   styles?: {
     label?: TextStyle;
     content?: TextStyle;

@@ -640,36 +640,74 @@ const Preview: React.FC<PreviewProps> = ({
               >
                 {data.map((item) => (
                   <div key={item.id}>
-                    {item.label && (
-                      <Title
-                        level={4}
-                        style={{
-                          marginBottom: 8,
-                          lineHeight: lineSpacing,
-                          whiteSpace: "pre-line",
-                          fontWeight: item.styles?.label?.bold
-                            ? "bold"
-                            : "normal",
-                          color: item.styles?.label?.color,
-                        }}
-                      >
-                        {item.label}
-                      </Title>
-                    )}
-                    {item.content && (
-                      <Paragraph
-                        style={{
-                          lineHeight: lineSpacing,
-                          whiteSpace: "pre-line",
-                          fontWeight: item.styles?.content?.bold
-                            ? "bold"
-                            : "normal",
-                          color: item.styles?.content?.color,
-                          fontSize: contentFontSize,
-                        }}
-                      >
-                        {item.content}
-                      </Paragraph>
+                    {item.label && item.labelInline ? (
+                      <div className="flex items-baseline mb-2">
+                        <Text
+                          style={{
+                            lineHeight: lineSpacing,
+                            whiteSpace: "pre-line",
+                            fontWeight: item.styles?.label?.bold
+                              ? "bold"
+                              : "normal",
+                            color: item.styles?.label?.color,
+                            fontSize: contentFontSize,
+                            marginRight: 8,
+                          }}
+                        >
+                          {item.label}:
+                        </Text>
+                        {item.content && (
+                          <Paragraph
+                            style={{
+                              lineHeight: lineSpacing,
+                              whiteSpace: "pre-line",
+                              fontWeight: item.styles?.content?.bold
+                                ? "bold"
+                                : "normal",
+                              color: item.styles?.content?.color,
+                              fontSize: contentFontSize,
+                              marginBottom: 0,
+                            }}
+                          >
+                            {item.content}
+                          </Paragraph>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        {item.label && (
+                          <Title
+                            level={4}
+                            style={{
+                              marginBottom: 8,
+                              lineHeight: lineSpacing,
+                              whiteSpace: "pre-line",
+                              fontWeight: item.styles?.label?.bold
+                                ? "bold"
+                                : "normal",
+                              color: item.styles?.label?.color,
+                              fontSize: contentFontSize,
+                            }}
+                          >
+                            {item.label}
+                          </Title>
+                        )}
+                        {item.content && (
+                          <Paragraph
+                            style={{
+                              lineHeight: lineSpacing,
+                              whiteSpace: "pre-line",
+                              fontWeight: item.styles?.content?.bold
+                                ? "bold"
+                                : "normal",
+                              color: item.styles?.content?.color,
+                              fontSize: contentFontSize,
+                            }}
+                          >
+                            {item.content}
+                          </Paragraph>
+                        )}
+                      </>
                     )}
                   </div>
                 ))}

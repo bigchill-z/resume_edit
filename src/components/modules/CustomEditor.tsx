@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Button, Card, Form } from "antd";
+import { Input, Button, Card, Form, Checkbox } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useListEditor } from "../../hooks/useListEditor";
 import StyleControls from "../common/StyleControls";
@@ -9,6 +9,7 @@ interface CustomItem {
   id: string;
   label: string;
   content: string;
+  labelInline?: boolean;
   styles?: {
     label?: TextStyle;
     content?: TextStyle;
@@ -75,6 +76,16 @@ const CustomEditor: React.FC<CustomEditorProps> = ({
                 onChange={(e) => handleChange(item.id, "label", e.target.value)}
                 placeholder="输入标签"
               />
+              <div className="mt-2">
+                <Checkbox
+                  checked={item.labelInline}
+                  onChange={(e) =>
+                    handleChange(item.id, "labelInline", e.target.checked)
+                  }
+                >
+                  与内容在同一行
+                </Checkbox>
+              </div>
               <StyleControls
                 bold={item.styles?.label?.bold}
                 color={item.styles?.label?.color}
