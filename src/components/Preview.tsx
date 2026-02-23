@@ -835,7 +835,7 @@ const Preview: React.FC<PreviewProps> = ({
         ))}
       </div>
       <div className="absolute bottom-2 right-4 text-gray-400 text-sm">
-        第 {pageInfo.currentPage} 页 / 共 {pageInfo.totalPages} 页
+        预计 {pageInfo.totalPages} 页 (A4)
       </div>
     </div>
   );
