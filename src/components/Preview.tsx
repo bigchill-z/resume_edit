@@ -762,150 +762,42 @@ const Preview: React.FC<PreviewProps> = ({
     }
   };
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [pages, setPages] = useState<React.ReactNode[]>([]);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [pageInfo, setPageInfo] = useState({ currentPage: 1, totalPages: 1 });
-
-  const A4_WIDTH_MM = 210;
-  const A4_HEIGHT_MM = 297;
-  const PPI = 96;
-  const MM_TO_PX = PPI / 25.4;
-  const A4_WIDTH_PX = A4_WIDTH_MM * MM_TO_PX;
-  const A4_HEIGHT_PX = A4_HEIGHT_MM * MM_TO_PX;
-  const PAGE_PADDING_TOP = 40;
-  const PAGE_PADDING_BOTTOM = 40;
 
   useEffect(() => {
     const calculatePages = () => {
-      if (!containerRef.current) return;
+      if (!contentRef.current) return;
 
-      const currentWidth = containerRef.current.offsetWidth;
+      const contentHeight = contentRef.current.scrollHeight;
+
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const PPI = 96;
+      const MM_TO_PX = PPI / 25.4;
+      const A4_WIDTH_PX = A4_WIDTH_MM * MM_TO_PX;
+      const A4_HEIGHT_PX = A4_HEIGHT_MM * MM_TO_PX;
+
+      const currentWidth = contentRef.current.offsetWidth;
       const scaleFactor = currentWidth / A4_WIDTH_PX;
       const pageHeight = A4_HEIGHT_PX * scaleFactor;
-      const effectivePageHeight =
-        pageHeight - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM;
 
-      const moduleElements: { element: React.ReactNode; height: number }[] = [];
+      const paddingTop = 40;
+      const paddingBottom = 40;
+      const effectivePageHeight = pageHeight - paddingTop - paddingBottom;
 
-      sortedModules.forEach((module) => {
-        moduleElements.push({
-          element: (
-            <div
-              key={module.id}
-              style={{
-                marginBottom: `${2 * moduleSpacing}rem`,
-                transition: "margin 0.3s ease",
-              }}
-            >
-              {renderModule(module)}
-            </div>
-          ),
-          height: 0,
-        });
-      });
+      const pages = Math.max(1, Math.ceil(contentHeight / effectivePageHeight));
 
-      let currentPageElements: typeof moduleElements = [];
-      let currentPageHeight = 0;
-      const newPages: React.ReactNode[] = [];
-
-      moduleElements.forEach((item, index) => {
-        const tempDiv = document.createElement("div");
-        tempDiv.style.width = `${currentWidth}px`;
-        tempDiv.style.position = "absolute";
-        tempDiv.style.visibility = "hidden";
-        tempDiv.style.fontSize = `${contentFontSize}px`;
-        tempDiv.style.lineHeight = `${lineSpacing}`;
-        tempDiv.innerHTML = `
-          <div style="margin-bottom: ${2 * moduleSpacing}rem">
-            ${getModuleHTML(module as ResumeModule)}
-          </div>
-        `;
-        document.body.appendChild(tempDiv);
-        const itemHeight = tempDiv.offsetHeight;
-        document.body.removeChild(tempDiv);
-
-        if (
-          currentPageHeight + itemHeight > effectivePageHeight &&
-          currentPageElements.length > 0
-        ) {
-          newPages.push(
-            <div
-              key={`page-${newPages.length}`}
-              className="max-w-2xl mx-auto"
-              style={{
-                height: effectivePageHeight,
-                overflow: "hidden",
-                paddingTop: PAGE_PADDING_TOP,
-                paddingBottom: PAGE_PADDING_BOTTOM,
-              }}
-            >
-              {currentPageElements.map((el, i) => (
-                <div key={i}>{el.element}</div>
-              ))}
-            </div>,
-          );
-          currentPageElements = [];
-          currentPageHeight = 0;
-        }
-
-        currentPageElements.push(item);
-        currentPageHeight += itemHeight;
-
-        if (
-          index === moduleElements.length - 1 &&
-          currentPageElements.length > 0
-        ) {
-          newPages.push(
-            <div
-              key={`page-${newPages.length}`}
-              className="max-w-2xl mx-auto"
-              style={{
-                height: effectivePageHeight,
-                overflow: "hidden",
-                paddingTop: PAGE_PADDING_TOP,
-                paddingBottom: PAGE_PADDING_BOTTOM,
-              }}
-            >
-              {currentPageElements.map((el, i) => (
-                <div key={i}>{el.element}</div>
-              ))}
-            </div>,
-          );
-        }
-      });
-
-      if (newPages.length === 0) {
-        newPages.push(
-          <div
-            key="page-0"
-            className="max-w-2xl mx-auto"
-            style={{
-              height: effectivePageHeight,
-              overflow: "hidden",
-              paddingTop: PAGE_PADDING_TOP,
-              paddingBottom: PAGE_PADDING_BOTTOM,
-            }}
-          >
-            {sortedModules.map((module) => (
-              <div
-                key={module.id}
-                style={{
-                  marginBottom: `${2 * moduleSpacing}rem`,
-                }}
-              >
-                {renderModule(module)}
-              </div>
-            ))}
-          </div>,
-        );
-      }
-
-      setPages(newPages);
-      setPageInfo({ currentPage: 1, totalPages: newPages.length });
+      setPageInfo({ currentPage: 1, totalPages: pages });
     };
 
-    const timeoutId = setTimeout(calculatePages, 100);
-    return () => clearTimeout(timeoutId);
+    calculatePages();
+    const observer = new ResizeObserver(calculatePages);
+    if (contentRef.current) {
+      observer.observe(contentRef.current);
+    }
+
+    return () => observer.disconnect();
   }, [
     modules,
     spacing,
@@ -919,159 +811,34 @@ const Preview: React.FC<PreviewProps> = ({
 
   return (
     <div className="relative">
-      <div ref={containerRef} className="hidden" style={{ width: "794px" }} />
-      {pages.map((page, index) => (
-        <div key={index}>
+      <div
+        ref={contentRef}
+        className="max-w-2xl mx-auto"
+        style={{
+          transform: `scale(${spacing})`,
+          transformOrigin: "top center",
+          transition: "transform 0.3s ease",
+          lineHeight: lineSpacing,
+          fontSize: contentFontSize,
+        }}
+      >
+        {sortedModules.map((module) => (
           <div
+            key={module.id}
             style={{
-              transform: `scale(${spacing})`,
-              transformOrigin: "top center",
-              transition: "transform 0.3s ease",
+              marginBottom: `${2 * moduleSpacing}rem`,
+              transition: "margin 0.3s ease",
             }}
           >
-            {page}
+            {renderModule(module)}
           </div>
-          <div className="text-center text-gray-400 text-sm py-2">
-            第 {index + 1} 页 / 共 {pages.length} 页
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      <div className="absolute bottom-2 right-4 text-gray-400 text-sm">
+        第 {pageInfo.currentPage} 页 / 共 {pageInfo.totalPages} 页
+      </div>
     </div>
   );
 };
-
-function getModuleHTML(module: ResumeModule): string {
-  switch (module.type) {
-    case "personal":
-      return getPersonalModuleHTML(module);
-    case "education":
-      return getEducationModuleHTML(module);
-    case "work":
-      return getWorkModuleHTML(module);
-    case "skills":
-      return getSkillsModuleHTML(module);
-    case "projects":
-      return getProjectsModuleHTML(module);
-    case "custom":
-      return getCustomModuleHTML(module);
-    default:
-      return "";
-  }
-}
-
-function getPersonalModuleHTML(module: PersonalModule): string {
-  const data = module.data;
-  return `
-    <div class="flex items-center justify-between mb-8">
-      <div class="flex-1 text-center">
-        <h1 style="margin-bottom: 8px; font-weight: ${module.styles?.name?.bold ? "bold" : "normal"}; color: ${module.styles?.name?.color || "inherit"}">${data.name || "姓名"}</h1>
-        <p style="margin-bottom: 16px; white-space: pre-line;">${data.title || "职位"}</p>
-        <div>
-          ${data.email ? `<span style="margin-right: 16px;">${data.email}</span>` : ""}
-          ${data.phone ? `<span style="margin-right: 16px;">${data.phone}</span>` : ""}
-          ${data.address ? `<span>${data.address}</span>` : ""}
-        </div>
-        ${data.summary ? `<p style="margin-top: 16px; white-space: pre-line;">${data.summary}</p>` : ""}
-      </div>
-    </div>
-  `;
-}
-
-function getEducationModuleHTML(module: EducationModule): string {
-  const data = module.data;
-  if (!data || data.length === 0) return "";
-
-  return data
-    .map(
-      (item) => `
-    <div style="margin-bottom: 24px;">
-      <div>
-        <span style="font-weight: ${item.styles?.school?.bold ? "bold" : "normal"}; color: ${item.styles?.school?.color || "inherit"}">${item.school}</span>
-        | <span>${item.degree}</span>
-        | <span>${item.field}</span>
-        <span style="float: right;">${item.startDate} - ${item.endDate}</span>
-      </div>
-      ${item.description ? `<p>${item.description}</p>` : ""}
-    </div>
-  `,
-    )
-    .join("");
-}
-
-function getWorkModuleHTML(module: WorkModule): string {
-  const data = module.data;
-  if (!data || data.length === 0) return "";
-
-  return data
-    .map(
-      (item) => `
-    <div style="margin-bottom: 24px;">
-      <div>
-        <span style="font-weight: ${item.styles?.company?.bold ? "bold" : "normal"}; color: ${item.styles?.company?.color || "inherit"}">${item.company}</span>
-        | <span>${item.position}</span>
-        <span style="float: right;">${item.startDate} - ${item.endDate}</span>
-      </div>
-      ${item.description ? `<p>${item.description}</p>` : ""}
-    </div>
-  `,
-    )
-    .join("");
-}
-
-function getSkillsModuleHTML(module: SkillsModule): string {
-  const data = module.data;
-  if (!data || data.length === 0) return "";
-
-  return `
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-      ${data
-        .map(
-          (item) => `
-        <div style="display: flex; align-items: center;">
-          <span style="width: 80px;">${item.name}</span>
-          <div style="flex: 1; background: #e5e7eb; height: 8px; border-radius: 9999px;">
-            <div style="width: ${(item.level / 5) * 100}%; background: #2563eb; height: 8px; border-radius: 9999px;"></div>
-          </div>
-          <span style="margin-left: 8px;">${item.level}/5</span>
-        </div>
-      `,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
-function getProjectsModuleHTML(module: ProjectsModule): string {
-  const data = module.data;
-  if (!data || data.length === 0) return "";
-
-  return data
-    .map(
-      (item) => `
-    <div style="margin-bottom: 24px;">
-      <p style="font-weight: ${item.styles?.name?.bold ? "bold" : "normal"}; color: ${item.styles?.name?.color || "inherit"}">${item.name}</p>
-      ${item.description ? `<p>${item.description}</p>` : ""}
-      ${item.technologies ? `<p>${item.technologies.join(", ")}</p>` : ""}
-    </div>
-  `,
-    )
-    .join("");
-}
-
-function getCustomModuleHTML(module: CustomModule): string {
-  const data = module.data;
-  if (!data || data.length === 0) return "";
-
-  return data
-    .map(
-      (item) => `
-    <div style="margin-bottom: 16px;">
-      ${item.label ? `<p style="font-weight: ${item.styles?.label?.bold ? "bold" : "normal"}; color: ${item.styles?.label?.color || "inherit"}">${item.label}</p>` : ""}
-      ${item.content ? `<p>${item.content}</p>` : ""}
-    </div>
-  `,
-    )
-    .join("");
-}
 
 export default Preview;
