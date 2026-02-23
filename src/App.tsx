@@ -20,7 +20,17 @@ import type {
   ProjectsModule,
   CustomModule,
 } from "./types/index";
-import { Button, Checkbox, Card, Space, message, Slider, Input } from "antd";
+import {
+  Button,
+  Checkbox,
+  Card,
+  Space,
+  message,
+  Slider,
+  Input,
+  Modal,
+  Radio,
+} from "antd";
 import {
   DeleteOutlined,
   VerticalAlignTopOutlined,
@@ -153,6 +163,12 @@ function App() {
     null,
   );
   const [moduleTitleValue, setModuleTitleValue] = useState<string>("");
+
+  // 添加模块弹窗状态
+  const [showAddModuleModal, setShowAddModuleModal] = useState<boolean>(false);
+  const [selectedModuleType, setSelectedModuleType] =
+    useState<string>("custom");
+  const [newModuleTitle, setNewModuleTitle] = useState<string>("");
 
   // 处理保存简历
   const handleSaveResume = async () => {
@@ -569,26 +585,67 @@ function App() {
   );
 
   // 处理添加模块
+  // 打开添加模块弹窗
   const handleAddModule = useCallback(() => {
-    // 生成新模块ID
+    setSelectedModuleType("custom");
+    setNewModuleTitle("");
+    setShowAddModuleModal(true);
+  }, []);
+
+  // 确认添加模块
+  const handleConfirmAddModule = useCallback(() => {
     const newId = `module-${Date.now()}`;
-    // 获取新模块的顺序
     const newOrder = modules.length + 1;
 
-    // 创建自定义模块
-    const newModule: ResumeModule = {
-      id: newId,
-      type: "custom",
-      title: "自定义模块",
-      visible: true,
-      order: newOrder,
-      source: "custom",
-      data: [],
+    const titleMap: Record<string, string> = {
+      personal: "个人信息",
+      education: "教育背景",
+      work: "工作经历",
+      skills: "专业技能",
+      projects: "项目经历",
+      custom: newModuleTitle || "自定义模块",
     };
 
-    // 添加新模块到列表
+    const sourceMap: Record<string, "original" | "custom"> = {
+      personal: "original",
+      education: "original",
+      work: "original",
+      skills: "original",
+      projects: "original",
+      custom: "custom",
+    };
+
+    const defaultDataMap: Record<string, any> = {
+      personal: {
+        name: "",
+        title: "",
+        email: "",
+        phone: "",
+        address: "",
+        summary: "",
+        photo: "",
+      },
+      education: [],
+      work: [],
+      skills: [],
+      projects: [],
+      custom: [],
+    };
+
+    const newModule: ResumeModule = {
+      id: newId,
+      type: selectedModuleType as any,
+      title: titleMap[selectedModuleType] || "自定义模块",
+      visible: true,
+      order: newOrder,
+      source: sourceMap[selectedModuleType],
+      data: defaultDataMap[selectedModuleType],
+    };
+
     setModules([...modules, newModule]);
-  }, [modules]);
+    setShowAddModuleModal(false);
+    message.success("模块添加成功！");
+  }, [modules, selectedModuleType, newModuleTitle]);
 
   // 处理开始编辑模块标题
   const handleStartEditModuleTitle = useCallback(
@@ -994,6 +1051,73 @@ function App() {
               </Button>
             </div>
           </div>
+
+          {/* 添加模块弹窗 */}
+          <Modal
+            title="添加模块"
+            open={showAddModuleModal}
+            onOk={handleConfirmAddModule}
+            onCancel={() => setShowAddModuleModal(false)}
+            okText="添加"
+            cancelText="取消"
+          >
+            <div className="py-4">
+              <p className="mb-3 font-medium">选择模块类型：</p>
+              <Radio.Group
+                value={selectedModuleType}
+                onChange={(e) => setSelectedModuleType(e.target.value)}
+                className="flex flex-col gap-3"
+              >
+                <Radio value="personal">
+                  <span className="font-medium">个人信息</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 姓名、职位、联系方式等
+                  </span>
+                </Radio>
+                <Radio value="education">
+                  <span className="font-medium">教育背景</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 学校、学历、时间等
+                  </span>
+                </Radio>
+                <Radio value="work">
+                  <span className="font-medium">工作经历</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 公司、职位、时间等
+                  </span>
+                </Radio>
+                <Radio value="skills">
+                  <span className="font-medium">专业技能</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 技能名称和熟练程度
+                  </span>
+                </Radio>
+                <Radio value="projects">
+                  <span className="font-medium">项目经历</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 项目名称、描述、技术栈等
+                  </span>
+                </Radio>
+                <Radio value="custom">
+                  <span className="font-medium">自定义模块</span>
+                  <span className="text-gray-500 text-sm ml-2">
+                    - 完全自定义的模块
+                  </span>
+                </Radio>
+              </Radio.Group>
+
+              {selectedModuleType === "custom" && (
+                <div className="mt-4">
+                  <p className="mb-2 font-medium">模块标题：</p>
+                  <Input
+                    value={newModuleTitle}
+                    onChange={(e) => setNewModuleTitle(e.target.value)}
+                    placeholder="请输入模块标题"
+                  />
+                </div>
+              )}
+            </div>
+          </Modal>
 
           {/* 右侧预览区域 */}
           <div className="w-2/3 flex-shrink-0">
