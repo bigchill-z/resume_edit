@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type {
   ResumeModule,
   PersonalModule,
@@ -762,28 +762,70 @@ const Preview: React.FC<PreviewProps> = ({
     }
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [pageInfo, setPageInfo] = useState({ currentPage: 1, totalPages: 1 });
+
+  useEffect(() => {
+    const calculatePages = () => {
+      if (!contentRef.current) return;
+
+      const contentHeight = contentRef.current.scrollHeight;
+      const containerHeight = contentRef.current.clientHeight;
+
+      const A4_HEIGHT_PX = 1123;
+      const effectiveHeight =
+        containerHeight > 0 ? containerHeight : A4_HEIGHT_PX;
+      const pages = Math.max(1, Math.ceil(contentHeight / effectiveHeight));
+
+      setPageInfo({ currentPage: 1, totalPages: pages });
+    };
+
+    calculatePages();
+    const observer = new ResizeObserver(calculatePages);
+    if (contentRef.current) {
+      observer.observe(contentRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [
+    modules,
+    spacing,
+    lineSpacing,
+    moduleSpacing,
+    moduleDividerSpacing,
+    moduleFirstLineSpacing,
+    moduleTitleFontSize,
+    contentFontSize,
+  ]);
+
   return (
-    <div
-      className="max-w-2xl mx-auto"
-      style={{
-        transform: `scale(${spacing})`,
-        transformOrigin: "top center",
-        transition: "transform 0.3s ease",
-        lineHeight: lineSpacing,
-        fontSize: contentFontSize,
-      }}
-    >
-      {sortedModules.map((module) => (
-        <div
-          key={module.id}
-          style={{
-            marginBottom: `${2 * moduleSpacing}rem`,
-            transition: "margin 0.3s ease",
-          }}
-        >
-          {renderModule(module)}
-        </div>
-      ))}
+    <div className="relative">
+      <div
+        ref={contentRef}
+        className="max-w-2xl mx-auto"
+        style={{
+          transform: `scale(${spacing})`,
+          transformOrigin: "top center",
+          transition: "transform 0.3s ease",
+          lineHeight: lineSpacing,
+          fontSize: contentFontSize,
+        }}
+      >
+        {sortedModules.map((module) => (
+          <div
+            key={module.id}
+            style={{
+              marginBottom: `${2 * moduleSpacing}rem`,
+              transition: "margin 0.3s ease",
+            }}
+          >
+            {renderModule(module)}
+          </div>
+        ))}
+      </div>
+      <div className="absolute bottom-2 right-4 text-gray-400 text-sm">
+        第 {pageInfo.currentPage} 页 / 共 {pageInfo.totalPages} 页
+      </div>
     </div>
   );
 };

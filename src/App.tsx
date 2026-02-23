@@ -178,6 +178,15 @@ function App() {
 
       const exportData = {
         modules,
+        globalSettings: {
+          spacing,
+          lineSpacing,
+          moduleSpacing,
+          moduleDividerSpacing,
+          moduleFirstLineSpacing,
+          moduleTitleFontSize,
+          contentFontSize,
+        },
         timestamp: new Date().toISOString(),
       };
 
@@ -455,6 +464,25 @@ function App() {
           // 更新模块
           if (importedData.modules) {
             setModules(importedData.modules);
+          }
+
+          // 更新全局设置
+          if (importedData.globalSettings) {
+            const settings = importedData.globalSettings;
+            if (typeof settings.spacing === "number")
+              setSpacing(settings.spacing);
+            if (typeof settings.lineSpacing === "number")
+              setLineSpacing(settings.lineSpacing);
+            if (typeof settings.moduleSpacing === "number")
+              setModuleSpacing(settings.moduleSpacing);
+            if (typeof settings.moduleDividerSpacing === "number")
+              setModuleDividerSpacing(settings.moduleDividerSpacing);
+            if (typeof settings.moduleFirstLineSpacing === "number")
+              setModuleFirstLineSpacing(settings.moduleFirstLineSpacing);
+            if (typeof settings.moduleTitleFontSize === "number")
+              setModuleTitleFontSize(settings.moduleTitleFontSize);
+            if (typeof settings.contentFontSize === "number")
+              setContentFontSize(settings.contentFontSize);
           }
 
           // 提示用户导入成功
