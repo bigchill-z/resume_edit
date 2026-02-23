@@ -589,7 +589,7 @@ function App() {
       const newOrder = modules.length + 1;
 
       const copiedModule: ResumeModule = {
-        ...module,
+        ...JSON.parse(JSON.stringify(module)),
         id: newId,
         title: `${module.title} (副本)`,
         order: newOrder,
@@ -694,7 +694,7 @@ function App() {
                     step={0.1}
                     value={spacing}
                     onChange={setSpacing}
-                    style={{ width: 150 }}
+                    style={{ width: 100 }}
                   />
                 </div>
 
@@ -705,8 +705,8 @@ function App() {
                   </span>
                   <span>{lineSpacing.toFixed(1)}x</span>
                   <Slider
-                    min={0.8}
-                    max={1.8}
+                    min={0.5}
+                    max={2.0}
                     step={0.1}
                     value={lineSpacing}
                     onChange={setLineSpacing}
@@ -721,7 +721,7 @@ function App() {
                   </span>
                   <span>{moduleSpacing.toFixed(1)}x</span>
                   <Slider
-                    min={0.5}
+                    min={0.0}
                     max={1.5}
                     step={0.1}
                     value={moduleSpacing}
@@ -772,11 +772,11 @@ function App() {
                   <span>{moduleTitleFontSize}px</span>
                   <Slider
                     min={16}
-                    max={24}
+                    max={32}
                     step={1}
                     value={moduleTitleFontSize}
                     onChange={setModuleTitleFontSize}
-                    style={{ width: 150 }}
+                    style={{ width: 100 }}
                   />
                 </div>
 
@@ -788,11 +788,11 @@ function App() {
                   <span>{contentFontSize}px</span>
                   <Slider
                     min={12}
-                    max={18}
+                    max={24}
                     step={1}
                     value={contentFontSize}
                     onChange={setContentFontSize}
-                    style={{ width: 150 }}
+                    style={{ width: 100 }}
                   />
                 </div>
               </div>
