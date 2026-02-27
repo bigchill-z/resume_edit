@@ -24,6 +24,14 @@ export const exportToPDF = async (
     element.style.border = "none";
     element.style.boxShadow = "none";
 
+    // 临时隐藏页码估算元素
+    const pageInfoElement = element.querySelector('.print\\:hidden') as HTMLElement;
+    let originalDisplay = "";
+    if (pageInfoElement) {
+      originalDisplay = pageInfoElement.style.display;
+      pageInfoElement.style.display = "none";
+    }
+
     // 使用html2canvas将DOM元素转换为canvas
     const canvas = await html2canvas(element, {
       scale: 2, // 提高分辨率
@@ -34,6 +42,11 @@ export const exportToPDF = async (
 
     // 恢复原始样式
     element.style.cssText = originalStyle;
+
+    // 恢复页码估算元素显示
+    if (pageInfoElement) {
+      pageInfoElement.style.display = originalDisplay;
+    }
 
     // 创建PDF实例
     const pdf = new jsPDF({
