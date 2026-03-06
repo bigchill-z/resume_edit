@@ -630,113 +630,100 @@ const Preview: React.FC<PreviewProps> = ({
   };
 
   // 渲染自定义模块
-  const renderCustomModule = () => {
-    const customModules = modules.filter((module) => module.type === "custom");
-    if (customModules.length === 0) return null;
+  const renderCustomModule = (module: CustomModule) => {
+    if (!module.visible) return null;
+    const data = module.data;
+    if (!data || data.length === 0) return null;
 
     return (
-      <>
-        {customModules.map((module) => {
-          if (!module.visible) return null;
-          const data = module.data;
-          if (!data || data.length === 0) return null;
-
-          return (
-            <div key={module.id} className="mb-8">
-              <Title
-                level={3}
-                style={{
-                  marginBottom: `${16 * moduleDividerSpacing}px`,
-                  fontSize: moduleTitleFontSize,
-                }}
-              >
-                {module.title}
-              </Title>
-              <Divider
-                style={{ marginBottom: `${8 * moduleFirstLineSpacing}px` }}
-              />
-              <div
-                className="space-y-6"
-                style={{ lineHeight: lineSpacing, whiteSpace: "pre-line" }}
-              >
-                {data.map((item) => (
-                  <div key={item.id}>
-                    {item.label && item.labelInline ? (
-                      <div className="flex items-baseline mb-2">
-                        <Text
-                          style={{
-                            lineHeight: lineSpacing,
-                            whiteSpace: "pre-line",
-                            fontWeight: item.styles?.label?.bold
-                              ? "bold"
-                              : "normal",
-                            color: item.styles?.label?.color,
-                            fontSize: contentFontSize,
-                            marginRight: 8,
-                          }}
-                        >
-                          {item.label}:
-                        </Text>
-                        {item.content && (
-                          <Paragraph
-                            style={{
-                              lineHeight: lineSpacing,
-                              whiteSpace: "pre-line",
-                              fontWeight: item.styles?.content?.bold
-                                ? "bold"
-                                : "normal",
-                              color: item.styles?.content?.color,
-                              fontSize: contentFontSize,
-                              marginBottom: 0,
-                            }}
-                          >
-                            {item.content}
-                          </Paragraph>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        {item.label && (
-                          <Title
-                            level={4}
-                            style={{
-                              marginBottom: 8,
-                              lineHeight: lineSpacing,
-                              whiteSpace: "pre-line",
-                              fontWeight: item.styles?.label?.bold
-                                ? "bold"
-                                : "normal",
-                              color: item.styles?.label?.color,
-                              fontSize: contentFontSize,
-                            }}
-                          >
-                            {item.label}
-                          </Title>
-                        )}
-                        {item.content && (
-                          <Paragraph
-                            style={{
-                              lineHeight: lineSpacing,
-                              whiteSpace: "pre-line",
-                              fontWeight: item.styles?.content?.bold
-                                ? "bold"
-                                : "normal",
-                              color: item.styles?.content?.color,
-                              fontSize: contentFontSize,
-                            }}
-                          >
-                            {item.content}
-                          </Paragraph>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
+      <div className="mb-8">
+        <Title
+          level={3}
+          style={{
+            marginBottom: `${16 * moduleDividerSpacing}px`,
+            fontSize: moduleTitleFontSize,
+          }}
+        >
+          {module.title}
+        </Title>
+        <Divider style={{ marginBottom: `${8 * moduleFirstLineSpacing}px` }} />
+        <div
+          className="space-y-6"
+          style={{ lineHeight: lineSpacing, whiteSpace: "pre-line" }}
+        >
+          {data.map((item) => (
+            <div key={item.id}>
+              {item.label && item.labelInline ? (
+                <div className="flex items-baseline mb-2">
+                  <Text
+                    style={{
+                      lineHeight: lineSpacing,
+                      whiteSpace: "pre-line",
+                      fontWeight: item.styles?.label?.bold ? "bold" : "normal",
+                      color: item.styles?.label?.color,
+                      fontSize: contentFontSize,
+                      marginRight: 8,
+                    }}
+                  >
+                    {item.label}:
+                  </Text>
+                  {item.content && (
+                    <Paragraph
+                      style={{
+                        lineHeight: lineSpacing,
+                        whiteSpace: "pre-line",
+                        fontWeight: item.styles?.content?.bold
+                          ? "bold"
+                          : "normal",
+                        color: item.styles?.content?.color,
+                        fontSize: contentFontSize,
+                        marginBottom: 0,
+                      }}
+                    >
+                      {item.content}
+                    </Paragraph>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {item.label && (
+                    <Title
+                      level={4}
+                      style={{
+                        marginBottom: 8,
+                        lineHeight: lineSpacing,
+                        whiteSpace: "pre-line",
+                        fontWeight: item.styles?.label?.bold
+                          ? "bold"
+                          : "normal",
+                        color: item.styles?.label?.color,
+                        fontSize: contentFontSize,
+                      }}
+                    >
+                      {item.label}
+                    </Title>
+                  )}
+                  {item.content && (
+                    <Paragraph
+                      style={{
+                        lineHeight: lineSpacing,
+                        whiteSpace: "pre-line",
+                        fontWeight: item.styles?.content?.bold
+                          ? "bold"
+                          : "normal",
+                        color: item.styles?.content?.color,
+                        fontSize: contentFontSize,
+                      }}
+                    >
+                      {item.content}
+                    </Paragraph>
+                  )}
+                </>
+              )}
             </div>
-          );
-        })}
-      </>
+          ))}
+        </div>
+      </div>
     );
   };
 
@@ -756,7 +743,7 @@ const Preview: React.FC<PreviewProps> = ({
       case "projects":
         return renderProjectsModule(module as ProjectsModule);
       case "custom":
-        return renderCustomModule();
+        return renderCustomModule(module as CustomModule);
       default:
         return null;
     }
