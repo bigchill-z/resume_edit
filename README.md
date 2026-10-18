@@ -4,7 +4,7 @@
 
 支持多简历管理、三套可切换的简历模板、实时预览与自动保存、A4 分页提醒、PDF/图片导出，以及完全离线运行的桌面版。
 
-![清爽 SaaS 风格界面](docs/verification/35-default-saas.png)
+![清爽 SaaS 界面（经典单栏模板）](docs/readme/main-classic.png)
 
 ## 功能特性
 
@@ -24,9 +24,13 @@
 
 | 左侧深色栏模板 | 简约标签模板 |
 | --- | --- |
-| ![左侧深色栏模板](docs/verification/47-template-sidebar.png) | ![简约标签模板](docs/verification/58-template-label.png) |
+| ![左侧深色栏模板](docs/readme/template-sidebar.png) | ![简约标签模板](docs/readme/template-label.png) |
 
-| 选择目录导出 | 编辑区 / 分页提醒 |
+| 六项间距设置 | A4 分页提醒 |
+| --- | --- |
+| ![六项间距设置](docs/readme/spacing-settings.png) | ![A4 分页提醒](docs/readme/page-line.png) |
+
+| 选择目录导出 | 导出进度提示 |
 | --- | --- |
 | ![选择目录导出](docs/verification/77-export-choose-dir.png) | ![导出进度提示](docs/verification/79-export-progress.png) |
 
