@@ -1,0 +1,57 @@
+{
+  "name": "resume-editor-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "简历编辑器桌面版（Electron 便携 exe）",
+  "author": "resume-editor",
+  "main": "main.js",
+  "scripts": {
+    "build": "node build.js",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.2",
+    "puppeteer-core": "^23.10.4"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.resume.editor",
+    "productName": "ResumeEditor",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "server/**/*",
+      "web-dist/**/*",
+      "build/icon.ico",
+      "node_modules/**/*"
+    ],
+    "asar": true,
+    "compression": "normal",
+    "electronDownload": {
+      "mirror": "https://npmmirror.com/mirrors/electron/"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "ResumeEditor-${version}.exe",
+      "requestExecutionLevel": "user"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+server/files/
+*.log
+.DS_Store
+server/data/
+server/uploads/
+.tabbit-scripts/
+recon/
